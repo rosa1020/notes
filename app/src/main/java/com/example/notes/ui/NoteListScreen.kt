@@ -5,83 +5,78 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.notes.data.db.Note
+import com.example.notes.navigation.Screen
 
 @Composable
-fun NoteListScreen(noteListViewModel: NoteListViewModel = hiltViewModel()) {
+fun NoteListScreen(navController: NavController, noteListViewModel: NoteListViewModel = hiltViewModel()) {
+    val state = noteListViewModel.state.value
 
-    val noteListUIData by noteListViewModel.notes.collectAsState()
-
-    Scaffold(
-        topBar = {TopAppBar(title = { Text(text = "notes")})},
+    Scaffold (
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { noteListViewModel.addNote() },
-                backgroundColor = Color.Green) {
-                Text(text = "new")
+                onClick = {
+                          navController.navigate(Screen.AddEditNoteScreen.route)
+                },
+                backgroundColor = MaterialTheme.colors.primary
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add new note")
             }
         }
     ) {
-        NoteListScreen(
-            notes = noteListUIData.notes,
-            isLoading = noteListUIData.isLoading,
-            onItemClicked = { noteItem -> noteListViewModel.removeNote(noteItem) }
-        )
-    }
-}
-
-@Composable
-fun NoteListScreen(
-    notes: List<Note>,
-    isLoading: Boolean,
-    onItemClicked: (item: Note) -> Unit,
-) {
-    if (isLoading) {
-        LoadingContent()
-    } else {
-        NoteListContent(notes = notes, onItemClicked = onItemClicked)
-    }
-}
-
-@Composable
-fun LoadingContent() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-fun NoteListContent(
-    notes: List<Note>,
-    onItemClicked: (item: Note) -> Unit,
-) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(notes) { item ->
-                NoteListElement(note = item, onItemClicked = onItemClicked)
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                items(state.notes) { note ->
+                    NoteItem(
+                        note = note,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate(
+                                    Screen.AddEditNoteScreen.route +
+                                            "?id=${note.id}"
+                                )
+                            }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
 }
 
 @Composable
-fun NoteListElement(note: Note, onItemClicked: (item: Note) -> Unit) {
-    Row(modifier = Modifier.clickable { onItemClicked(note) }.padding(8.dp).fillMaxWidth()) {
-        Text(text = "Note #${note.id}: ${note.title}")
+fun NoteItem(
+    note: Note,
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier
+    ) {
+        Text (
+            text = note.title,
+            style = MaterialTheme.typography.h6,
+            color = MaterialTheme.colors.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text (
+            text = note.content,
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.onSurface,
+            maxLines = 10,
+            overflow = TextOverflow.Ellipsis
+        )
     }
-}
-
-@Preview
-@Composable
-fun NoteListScreenPreview() {
-    NoteListScreen()
 }

@@ -1,48 +1,36 @@
 package com.example.notes.ui
 
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notes.data.NoteRepository
 import com.example.notes.data.db.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NoteListViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel() {
 
-    private val _notes = MutableStateFlow(DEFAULT_NOTELIST_UI_DATA)
-    val notes = _notes.asStateFlow()
+    private val _state = mutableStateOf(NoteUIData())
+    val state: State<NoteUIData> = _state
 
     init {
-        loadNotes()
+        getNotes()
     }
 
-    fun addNote() {
+    private fun getNotes() {
+        _state.value.isLoading = true
         viewModelScope.launch {
-            noteRepository.addNote(Note(0, "Test Title"))
+            noteRepository.getNotes().onEach { notes ->
+                _state.value = state.value.copy(
+                    notes = notes
+                )
+            }
+            _state.value.isLoading = false
         }
     }
-
-    fun removeNote(note: Note) {
-        viewModelScope.launch {
-            noteRepository.removeNote(note)
-        }
-    }
-
-    private fun loadNotes() {
-        _notes.update { prev -> prev.copy(isLoading = true) }
-        viewModelScope.launch {
-            val notes = noteRepository.getNotes()
-            _notes.update { prev -> prev.copy(isLoading = false, notes = notes) }
-        }
-    }
-
-    companion object {
-        private val DEFAULT_NOTELIST_UI_DATA = NotesUIData(mutableListOf<Note>(), false)
-    }
-
 }

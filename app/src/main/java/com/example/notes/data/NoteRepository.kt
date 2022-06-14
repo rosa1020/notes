@@ -2,16 +2,19 @@ package com.example.notes.data
 
 import com.example.notes.data.db.Note
 import com.example.notes.data.db.NoteDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class NoteRepository @Inject constructor(private val noteDao: NoteDao) {
 
-    suspend fun getNotes(): List<Note> = withContext(Dispatchers.IO) {
-        return@withContext noteDao.getNotes()
+    fun getNotes(): Flow<List<Note>> {
+        return noteDao.getNotes()
+    }
+
+    suspend fun getNote(id: Int): Note? {
+        return noteDao.getNote(id)
     }
 
     suspend fun addNote(note: Note) {
