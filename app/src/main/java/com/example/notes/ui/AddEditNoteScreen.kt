@@ -4,11 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 
 @Composable
@@ -17,6 +18,20 @@ fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditVie
     val contentData = addEditViewModel.noteContent.value
 
     Scaffold(
+        topBar = {
+                 TopAppBar(
+                     title = { Text(text = "notes") },
+                     navigationIcon = if (navController.previousBackStackEntry != null) {
+                         {
+                             IconButton(onClick = { navController.navigateUp() }) {
+                                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                             }
+                         }
+                     } else {
+                         null
+                     },
+                 )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {

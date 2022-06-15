@@ -8,6 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.data.NoteRepository
 import com.example.notes.data.db.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,19 +22,32 @@ class NoteListViewModel @Inject constructor(private val noteRepository: NoteRepo
     private val _state = mutableStateOf(NoteUIData())
     val state: State<NoteUIData> = _state
 
+    private var getNotesJob: Job? = null
+
     init {
         getNotes()
     }
 
     private fun getNotes() {
-        _state.value.isLoading = true
-        viewModelScope.launch {
-            noteRepository.getNotes().onEach { notes ->
+        getNotesJob?.cancel()
+        getNotesJob = getSortedNotes()
+            .onEach { notes ->
                 _state.value = state.value.copy(
                     notes = notes
                 )
             }
-            _state.value.isLoading = false
+            .launchIn(viewModelScope)
+    }
+
+    private fun getSortedNotes() : Flow<List<Note>> {
+        return noteRepository.getNotes().map { notes ->
+            notes.sortedByDescending { it.timestamp }
+        }
+    }
+
+    fun removeNote(note: Note) {
+        viewModelScope.launch {
+            noteRepository.removeNote(note)
         }
     }
 }

@@ -26,11 +26,14 @@ class AddEditViewModel @Inject constructor(
 
     private var currentId: Int? = null
 
+    private var currentNote: Note? = null
+
     init {
         savedStateHandle.get<Int>("id")?.let { id ->
             if (id != -1) {
                 viewModelScope.launch {
                     getNote(id)?.also { note ->
+                        currentNote = note
                         currentId = note.id
                         _noteTitle.value = noteTitle.value.copy(
                             text = note.title,
