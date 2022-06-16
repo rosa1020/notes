@@ -1,4 +1,4 @@
-package com.example.notes.ui
+package com.example.notes.ui.noteeditscreen
 
 data class NoteTextFieldData(
     val text: String = "",

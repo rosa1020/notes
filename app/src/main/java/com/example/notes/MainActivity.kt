@@ -5,10 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.example.notes.navigation.NotesNavGraph
-import com.example.notes.navigation.Screen
+import com.example.notes.ui.navigation.NotesNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

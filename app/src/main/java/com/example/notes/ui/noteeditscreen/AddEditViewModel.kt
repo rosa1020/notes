@@ -1,6 +1,5 @@
-package com.example.notes.ui
+package com.example.notes.ui.noteeditscreen
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.SavedStateHandle

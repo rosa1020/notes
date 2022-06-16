@@ -1,4 +1,4 @@
-package com.example.notes.ui
+package com.example.notes.ui.notelistscreen
 
 import com.example.notes.data.db.Note
 

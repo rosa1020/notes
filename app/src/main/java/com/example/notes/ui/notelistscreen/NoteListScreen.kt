@@ -20,7 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.notes.data.db.Note
-import com.example.notes.navigation.Screen
+import com.example.notes.ui.navigation.Screen
+import com.example.notes.ui.notelistscreen.NoteListViewModel
 
 @Composable
 fun NoteListScreen(navController: NavController, noteListViewModel: NoteListViewModel = hiltViewModel()) {
@@ -52,11 +53,10 @@ fun NoteListScreen(navController: NavController, noteListViewModel: NoteListView
                             .background(Color.Yellow)
                             .clickable {
                                 navController.navigate(
-                                    Screen.AddEditNoteScreen.route +
+                                    Screen.NoteDetailScreen.route +
                                             "?id=${note.id}"
                                 )
                             },
-                        onDeleteClick = { noteListViewModel.removeNote(note) }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -69,7 +69,6 @@ fun NoteListScreen(navController: NavController, noteListViewModel: NoteListView
 fun NoteItem(
     note: Note,
     modifier: Modifier,
-    onDeleteClick: () -> Unit
 ) {
     Box(
         modifier = modifier,
@@ -87,12 +86,6 @@ fun NoteItem(
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(8.dp))
-        }
-        IconButton(
-            onClick = onDeleteClick ,
-            modifier = Modifier.align(Alignment.BottomEnd)
-        ) {
-            Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete note")
         }
     }
 }
