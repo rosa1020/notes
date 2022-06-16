@@ -1,4 +1,4 @@
-package com.example.notes.ui
+package com.example.notes.ui.notelistscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,9 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -21,14 +19,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.notes.data.db.Note
 import com.example.notes.ui.navigation.Screen
-import com.example.notes.ui.notelistscreen.NoteListViewModel
 
 @Composable
 fun NoteListScreen(navController: NavController, noteListViewModel: NoteListViewModel = hiltViewModel()) {
     val state = noteListViewModel.state.value
 
     Scaffold (
-        floatingActionButtonPosition = FabPosition.Center,
+        topBar = {
+          TopAppBar(
+              title = { Text(text = "Your Notes (${state.notes.size})") }
+          )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -50,7 +51,7 @@ fun NoteListScreen(navController: NavController, noteListViewModel: NoteListView
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(15.dp))
-                            .background(Color.Yellow)
+                            .background(Color.LightGray)
                             .clickable {
                                 navController.navigate(
                                     Screen.NoteDetailScreen.route +
@@ -85,7 +86,6 @@ fun NoteItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

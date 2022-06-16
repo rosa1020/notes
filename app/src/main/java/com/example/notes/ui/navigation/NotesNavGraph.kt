@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.notes.ui.AddEditNoteScreen
-import com.example.notes.ui.NoteListScreen
+import com.example.notes.ui.noteeditscreen.AddEditNoteScreen
+import com.example.notes.ui.notelistscreen.NoteListScreen
 import com.example.notes.ui.notedetailscreen.NoteDetailScreen
 
 @Composable

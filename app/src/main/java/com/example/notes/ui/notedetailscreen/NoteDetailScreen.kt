@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.sourceInformationMarkerEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,6 +48,7 @@ fun NoteDetailScreen(
                     IconButton(
                         onClick = {
                             noteDetailViewModel.removeNote(noteData.note)
+                            navController.navigate(Screen.NoteListScreen.route)
                         }
                     ) {
                         Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete note")
@@ -64,11 +64,13 @@ fun NoteDetailScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = noteData.note.title
+                text = noteData.note.title,
+                style = MaterialTheme.typography.h5
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = noteData.note.content
+                text = noteData.note.content,
+                style = MaterialTheme.typography.body1
             )
         }
     }

@@ -1,16 +1,17 @@
-package com.example.notes.ui
+package com.example.notes.ui.noteeditscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.notes.ui.noteeditscreen.AddEditViewModel
+import com.example.notes.ui.navigation.Screen
 
 @Composable
 fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditViewModel = hiltViewModel()) {
@@ -20,7 +21,7 @@ fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditVie
     Scaffold(
         topBar = {
                  TopAppBar(
-                     title = { Text(text = "notes") },
+                     title = { Text(text = addEditViewModel.getScreenTitle()) },
                      navigationIcon = if (navController.previousBackStackEntry != null) {
                          {
                              IconButton(onClick = { navController.navigateUp() }) {
@@ -30,17 +31,17 @@ fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditVie
                      } else {
                          null
                      },
+                     actions = {
+                         IconButton(
+                             onClick = {
+                                 addEditViewModel.saveNote()
+                                 navController.navigate(Screen.NoteListScreen.route)
+                             }
+                         ) {
+                             Icon(imageVector = Icons.Filled.Save, contentDescription = "Save note")
+                         }
+                     }
                  )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    addEditViewModel.saveNote()
-                },
-                backgroundColor = MaterialTheme.colors.primary
-            ) {
-                Icon(imageVector = Icons.Default.Done, contentDescription = "Save note")
-            }
         }
     ) {
         Column(
@@ -54,7 +55,8 @@ fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditVie
                 onValueChange = { addEditViewModel.updateTitle(it) },
                 label = { Text(text = titleData.label) },
                 singleLine = true,
-                textStyle = MaterialTheme.typography.h5
+                textStyle = MaterialTheme.typography.h5,
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
@@ -62,7 +64,7 @@ fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditVie
                 onValueChange = { addEditViewModel.updateContent(it) },
                 label = { Text(text = contentData.label) },
                 textStyle = MaterialTheme.typography.body1,
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }

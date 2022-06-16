@@ -47,6 +47,13 @@ class AddEditViewModel @Inject constructor(
         }
     }
 
+    fun getScreenTitle(): String {
+        if (currentId != null && currentId!! > 0) {
+            return "Edit Note"
+        }
+        return "Create New Note"
+    }
+
     fun updateTitle(newTitle: String) {
         _noteTitle.value = noteTitle.value.copy(text = newTitle)
     }

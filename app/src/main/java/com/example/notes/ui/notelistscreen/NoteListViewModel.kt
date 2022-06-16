@@ -18,8 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteListViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel() {
 
-    private val _state = mutableStateOf(NoteUIData())
-    val state: State<NoteUIData> = _state
+    private val _state = mutableStateOf(NoteListData())
+    val state: State<NoteListData> = _state
 
     private var getNotesJob: Job? = null
 
