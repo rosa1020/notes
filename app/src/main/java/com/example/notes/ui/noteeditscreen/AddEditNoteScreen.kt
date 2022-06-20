@@ -18,6 +18,23 @@ fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditVie
     val titleData = addEditViewModel.noteTitle.value
     val contentData = addEditViewModel.noteContent.value
 
+    val showEmptyNoteAlert = addEditViewModel.showEmptyNoteAlert
+
+    if (showEmptyNoteAlert.value) {
+            AlertDialog(
+                onDismissRequest = { addEditViewModel.setShowEmptyNoteAlert(false) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        addEditViewModel.setShowEmptyNoteAlert(false)
+                    }) {
+                        Text(text = "OK")
+                    }
+                },
+                title = { Text(text = "Note could not be saved") },
+                text = { Text(text = "Your note could not be saved, because the title and content must not be empty.") }
+            )
+    }
+
     Scaffold(
         topBar = {
                  TopAppBar(
@@ -34,8 +51,10 @@ fun AddEditNoteScreen(navController: NavController, addEditViewModel: AddEditVie
                      actions = {
                          IconButton(
                              onClick = {
-                                 addEditViewModel.saveNote()
-                                 navController.navigate(Screen.NoteListScreen.route)
+                                 val isSaved: Boolean = addEditViewModel.saveNote()
+                                 if (isSaved) {
+                                     navController.navigate(Screen.NoteListScreen.route)
+                                 }
                              }
                          ) {
                              Icon(imageVector = Icons.Filled.Save, contentDescription = "Save note")

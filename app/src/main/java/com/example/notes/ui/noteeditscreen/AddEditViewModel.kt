@@ -1,7 +1,7 @@
 package com.example.notes.ui.noteeditscreen
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +22,8 @@ class AddEditViewModel @Inject constructor(
 
     private val _noteContent = mutableStateOf(NoteTextFieldData(label = "Content"))
     val noteContent: State<NoteTextFieldData> = _noteContent
+
+    val showEmptyNoteAlert = mutableStateOf(false)
 
     private var currentId: Int? = null
 
@@ -62,16 +64,28 @@ class AddEditViewModel @Inject constructor(
         _noteContent.value = noteContent.value.copy(text = newContent)
     }
 
-    fun saveNote() {
-        viewModelScope.launch {
-            val newNote = Note(
-                title = noteTitle.value.text,
-                content = noteContent.value.text,
-                timestamp = System.currentTimeMillis(),
-                id = currentId
-            )
-            noteRepository.addNote(newNote)
+    fun setShowEmptyNoteAlert(show: Boolean) {
+        showEmptyNoteAlert.value = show
+    }
+
+    fun saveNote(): Boolean {
+        val isSaved: Boolean
+        if (noteTitle.value.text.isBlank() || noteContent.value.text.isBlank()) {
+            showEmptyNoteAlert.value = true
+            isSaved = false
+        } else {
+            viewModelScope.launch {
+                val newNote = Note(
+                    title = noteTitle.value.text,
+                    content = noteContent.value.text,
+                    timestamp = System.currentTimeMillis(),
+                    id = currentId
+                )
+                noteRepository.addNote(newNote)
+            }
+            isSaved = true
         }
+        return isSaved
     }
 
     private suspend fun getNote(id: Int): Note? {
