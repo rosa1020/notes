@@ -43,10 +43,4 @@ class NoteListViewModel @Inject constructor(private val noteRepository: NoteRepo
             notes.sortedByDescending { it.timestamp }
         }
     }
-
-    fun removeNote(note: Note) {
-        viewModelScope.launch {
-            noteRepository.removeNote(note)
-        }
-    }
 }
