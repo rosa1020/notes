@@ -1,6 +1,5 @@
 package com.example.notes.data
 
-import android.util.Log
 import com.example.notes.data.db.Note
 import com.example.notes.data.db.NoteDao
 import kotlinx.coroutines.flow.Flow
